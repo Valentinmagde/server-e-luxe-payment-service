@@ -1,0 +1,67 @@
+{
+    "user": {
+        "unauthorize": {
+            "noToken": "Pas de jeton",
+            "invalidToken": "Jeton non valide",
+            "invalidAdminToken": "Jeton d'administration invalide",
+            "invalidSellerToken": "Jeton de vendeur invalide",
+            "invalidAdminOrSeller": "Jeton d'administrateur ou de vendeur invalide",
+            "invalidRefreshToken": "Jeton de rafraîchissement invalide",
+            "noRefreshToken": "Pas de jeton de rafraîchissement"
+        }
+    },
+    "order": {
+        "orderNotFound": "Cette commande n'existe pas",
+        "invalidOrderId": "L'identifiant de cette commande n'est pas valide"
+    },
+    "paymentMethod": {
+        "paymentMethodNotFound": "Le mode de paiement n'existe pas",
+        "invalidPaymentMethodId": "L'identifiant du mode de paiement n'est pas valide",
+        "systemAlreadyAssigned": "Ce système est déjà affecté à ce mode de paiement",
+		"notHaveThisSystem": "Ce mode de paiement n'a pas ce système."
+    },
+    "shippingZone": {
+        "shippingZoneNotFound": "La zone de livraison n'exist pas",
+        "invalidShippingZoneId": "L'identifiant de la zone d'expédition n'est pas valide"
+    },
+    "shippingPrice": {
+        "shippingPriceNotFound": "Ce prix d'expédition n'existe pas",
+        "invalidShippingPriceId": "L'identifiant du prix d'expédition n'est pas valide"
+    },
+    "shippingMethod": {
+		"shippingMethodNotFound": "La méthode d'expédition n'exist pas",
+		"invalidShippingMethodId": "L'identifiant de la méthode d'expédition n'est pas valide"
+	},
+    "stripeCustomer": {
+		"stripeCustomerNotFound": "Ce client Stripe n'existe pas",
+		"invalidStripeCustomerId": "L'identifiant de ce client Stripe est invalide",
+		"invalidUserId": "L'identifiant de cet utilisateur est invalide"
+	},
+    "stripePaymentMethod": {
+		"stripePaymentMethodNotFound": "Méthode de paiement stripe introuvable",
+		"invaliStripePaymentMethodId": "Identifiant de la méthode de paiement Stripe invalide",
+		"stripeCustomerNotFound": "Ce client Stripe n'existe pas",
+		"invalidStripeCustomerId": "L'identifiant de ce client Stripe est invalid"
+	},
+    "stripePaymentIntent": {
+		"stripePaymentIntentNotFound": "L'intention de paiement Stripe n'a pas été trouvée",
+		"invalidStripePaymentIntentId": "L'identifiant de l'intention de paiement Stripe n'est pas valide",
+		"stripeCustomerNotFound": "Le client Stripe n'existe pas",
+		"invalidStripeCustomerId": "Identifiant de client Stripe invalide"
+	},
+    "system": {
+		"systemNotFound": "Ce système n'existe pas",
+		"invalidSystemId": "L'identifiant de ce système est invalide"
+	},
+    "others": {
+        "routeNotFound": "Itinéraire non trouvé"
+    },
+    "config": {
+        "cache": {
+            "redis": {
+                "redisConnectionTo": "La connexion Redis à",
+			    "failed": "a échoué"
+            }
+        }
+    }
+}

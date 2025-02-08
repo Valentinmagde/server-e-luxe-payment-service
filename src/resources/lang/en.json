@@ -1,0 +1,67 @@
+{
+	"order": {
+		"orderNotFound": "Order does not exits",
+		"invalidOrderId": "Invalid order id"
+	},
+	"paymentMethod": {
+		"paymentMethodNotFound": "Payment method does not exits",
+		"invalidPaymentMethodId": "Invalid payment method id",
+		"systemAlreadyAssigned": "This system is already assigned to this payment method",
+		"notHaveThisSystem": "Payment method does not have this system."
+	},
+	"shippingZone": {
+		"shippingZoneNotFound": "Shipping zone does not exits",
+		"invalidShippingZoneId": "Invalid shipping zone id"
+	},
+	"shippingPrice": {
+		"shippingPriceNotFound": "Shipping price does not exits",
+		"invalidShippingPriceId": "Invalid shipping price id"
+	},
+	"shippingMethod": {
+		"shippingMethodNotFound": "Shipping method does not exits",
+		"invalidShippingMethodId": "Invalid shipping method id"
+	},
+	"stripeCustomer": {
+		"stripeCustomerNotFound": "Stripe customer does not exits",
+		"invalidStripeCustomerId": "Invalid stripe customer id",
+		"invalidUserId": "User ID is invalid"
+	},
+	"stripePaymentMethod": {
+		"stripePaymentMethodNotFound": "Stripe payment method not found",
+		"invalidStripePaymentMethodId": "Invalid stripe payment method id",
+		"stripeCustomerNotFound": "Stripe customer does not exits",
+		"invalidStripeCustomerId": "Invalid stripe customer id"
+	},
+	"stripePaymentIntent": {
+		"stripePaymentIntentNotFound": "Stripe payment intent not found",
+		"invalidStripePaymentIntentId": "Invalid stripe payment intent id",
+		"stripeCustomerNotFound": "Stripe customer does not exits",
+		"invalidStripeCustomerId": "Invalid stripe customer id"
+	},
+	"system": {
+		"systemNotFound": "This system does not exist",
+		"invalidSystemId": "The identifier for this system is invalid"
+	},
+	"user": {
+		"unauthorize": {
+			"noToken": "No token",
+			"invalidToken": "Invalid token",
+			"invalidAdminToken": "Invalid admin token",
+			"invalidSellerToken": "Invalid seller token",
+			"invalidAdminOrSeller": "Invalid admin or seller token",
+			"invalidRefreshToken": "Invalid refresh token",
+			"noRefreshToken": "No refresh token"
+		}
+	},
+	"others": {
+		"routeNotFound": "Route not found"
+	},
+	"config": {
+		"cache": {
+			"redis": {
+				"redisConnectionTo": "Redis connection to",
+				"failed": "failed"
+			}
+		}
+	}
+}

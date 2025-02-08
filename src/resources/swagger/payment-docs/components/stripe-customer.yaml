@@ -1,0 +1,71 @@
+components:
+  schemas:
+    StripeCustomer:
+      type: object
+      properties:
+        _id:
+          type: string
+        id:
+          type: string
+        object:
+          type: string
+        address:
+          type: string
+        balance:
+          type: number
+        created:
+          type: number
+        name:
+          type: string
+        currency:
+          type: string
+        default_source:
+          type: string
+        delinquent:
+          type: boolean
+        description:
+          type: string
+        discount:
+          type: string
+        email:
+          type: string
+        invoice_prefix:
+          type: string
+        invoice_settings:
+          type: object
+          properties:
+            custom_field:
+              type: string
+            default_payment_method:
+              type: string
+            footer:
+              type: string
+            rendering_options:
+              type: string
+        livemode:
+          type: boolean
+        metadata:
+          type: object
+          properties:
+            order_id:
+              type: string
+        next_invoice_sequence:
+          type: number
+        phone:
+          type: string
+        preferred_locales:
+          type: array
+        shipping:
+          type: string
+        tax_exempt:
+          type: string
+        test_clock:
+          type: string
+        user:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

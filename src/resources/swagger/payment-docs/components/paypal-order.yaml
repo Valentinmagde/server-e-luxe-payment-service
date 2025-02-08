@@ -1,0 +1,46 @@
+components:
+  schemas:
+    PaypalOrder:
+      type: object
+      description: Represents a PayPal order.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier for the order in the database.
+        id:
+          type: string
+          description: The unique identifier for the order provided by PayPal.
+        status:
+          type: string
+          description: The current status of the PayPal order (e.g., "COMPLETED", "PENDING").
+        intent:
+          type: string
+          description: The intent of the order (e.g., "CAPTURE", "AUTHORIZE").
+        payment_source:
+          type: object
+          description: Information about the payment source used for the transaction.
+        create_time:
+          type: string
+          format: date-time
+          description: The timestamp when the PayPal order was created.
+        payer:
+          type: object
+          description: Details about the payer (e.g., name, email).
+        purchase_units:
+          type: array
+          items:
+            type: object
+          description: A list of purchase units associated with the order.
+        links:
+          type: array
+          items:
+            type: object
+          description: Hypermedia links related to the PayPal order.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the order was created in the system.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the order was last updated in the system.
