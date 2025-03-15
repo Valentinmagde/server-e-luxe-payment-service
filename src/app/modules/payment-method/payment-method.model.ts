@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const paymentMethodSchema = new mongoose.Schema(
   {
-    name: {type: String, required: true},
+    name: {type: Object, required: true},
     slug: {type: String, required: true},
     systems: [{type: mongoose.Schema.Types.ObjectId, ref: "system"}],
     mode: {

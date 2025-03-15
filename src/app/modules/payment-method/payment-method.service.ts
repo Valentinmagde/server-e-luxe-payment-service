@@ -45,7 +45,9 @@ class PaymentMethodService {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const paymentMethod = await PaymentMethod.findOne({slug: paymentMethodSlug});
+          const paymentMethod = await PaymentMethod.findOne({
+            slug: paymentMethodSlug,
+          });
 
           resolve(paymentMethod);
         } catch (error) {
@@ -121,7 +123,7 @@ class PaymentMethodService {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          data.slug = data.slug || slugify(data.name);
+          data.slug = data?.slug || slugify(data?.name?.en || data?.name?.fr);
           const paymentMethod = new PaymentMethod(data);
 
           const createdPaymentMethod = await paymentMethod.save();
@@ -243,11 +245,16 @@ class PaymentMethodService {
           const paymentMethod = await PaymentMethod.findById(paymentMethodId);
 
           if (paymentMethod) {
-            paymentMethod.name = data.name || paymentMethod.name;
+            paymentMethod.name = { ...paymentMethod.name, ...data.name };
             paymentMethod.slug =
               data.slug ||
               paymentMethod.slug ||
-              slugify(paymentMethod.name);
+              slugify(
+                data?.name?.en ||
+                  data?.name?.fr ||
+                  paymentMethod?.name?.en ||
+                  paymentMethod?.name?.fr
+              );
             paymentMethod.description =
               data.description || paymentMethod.description;
 

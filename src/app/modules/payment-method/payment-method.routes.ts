@@ -62,44 +62,19 @@ class PaymentMethodRoutes {
              *     requestBody:
              *       required: true
              *       content:
-             *         application/x-www-form-urlencoded:
-             *           schema:
-             *             type: object
-             *             properties:
-             *               name:
-             *                 type: string
-             *                 description: The payment method name.
-             *                 example: Stripe
-             *               slug:
-             *                 type: string
-             *                 description: |
-             *                    The payment method slug.
-             *
-             *                    A string can be qualified as a slug if it
-             *                    meets the following criteria:
-             *                    - It consists of lowercase alphanumeric
-             *                      characters (a-z, 0-9) and hyphens (-).
-             *                    - It does not contain any spaces, special
-             *                      characters, or accented characters.
-             *                    - It accurately and concisely describes the
-             *                      content of the resource it identifies.
-             *                    - It is unique within the context of the
-             *                      website or application.
-             *                 example: stripe
-             *               description:
-             *                 type: string
-             *                 description: The payment method description
-             *             required:
-             *               - name
-             *
              *         application/json:
              *           schema:
              *             type: object
              *             properties:
              *               name:
-             *                 type: string
-             *                 description: The payment method name.
-             *                 example: Stripe
+             *                 type: object
+             *                 properties:
+             *                   en:
+             *                     type: string
+             *                     description: Name in english
+             *                   fr:
+             *                     type: string
+             *                     description: Name in french
              *               slug:
              *                 type: string
              *                 description: |
@@ -667,38 +642,14 @@ class PaymentMethodRoutes {
              *             type: object
              *             properties:
              *               name:
-             *                 type: string
-             *                 description: The payment method name.
-             *                 example: Stripe
-             *               slug:
-             *                 type: string
-             *                 description: |
-             *                    The payment method slug.
-             *
-             *                    A string can be qualified as a slug if it
-             *                    meets the following criteria:
-             *                    - It consists of lowercase alphanumeric
-             *                      characters (a-z, 0-9) and hyphens (-).
-             *                    - It does not contain any spaces, special
-             *                      characters, or accented characters.
-             *                    - It accurately and concisely describes the
-             *                      content of the resource it identifies.
-             *                    - It is unique within the context of the
-             *                      website or application.
-             *                 example: stripe
-             *               description:
-             *                 type: string
-             *                 description: The payment method description
-             *             required:
-             *               - name
-             *         application/x-www-form-urlencoded:
-             *           schema:
-             *             type: object
-             *             properties:
-             *               name:
-             *                 type: string
-             *                 description: The payment method name.
-             *                 example: Stripe
+             *                 type: object
+             *                 properties:
+             *                   en:
+             *                     type: string
+             *                     description: Name in english
+             *                   fr:
+             *                     type: string
+             *                     description: Name in french
              *               slug:
              *                 type: string
              *                 description: |
