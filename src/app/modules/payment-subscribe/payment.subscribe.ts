@@ -37,10 +37,6 @@ class PaymentSubscribe {
           // Connect to the database
           const dbConnection = await dbManager.asyncOnConnect();
 
-          // Validate message structure
-          // const validationError = this.validateMessage(data);
-          // if (validationError) throw new Error(validationError);
-
           // Process payment
           await this.handleStripePayment(data, dbConnection);
         } catch (error) {
@@ -49,101 +45,6 @@ class PaymentSubscribe {
           channel.ack(msg); // Always acknowledge the message
         }
       });
-
-      // const dbManager = new DBManager();
-
-      // const exchangeName = "eluxe.order.confirmPayment";
-      // const routingKey = "confirmPayment";
-      // const queueName = "confirmPaymentQueue";
-
-      // await rabbitmqManager.createChannel();
-      // const channel = rabbitmqManager.channel;
-      // await channel.assertExchange(exchangeName, "direct");
-      // const q = await channel.assertQueue(queueName);
-      // await channel.bindQueue(q.queue, exchangeName, routingKey);
-
-      // channel.consume(q.queue, (msg: any) => {
-      //   const data: any = JSON.parse(msg.content);
-
-      //   dbManager
-      //     .asyncOnConnect()
-      //     .then((dbConenction) => {
-      //       paymentMethodService
-      //         .getPaymentMethodById(data.message.payment_method)
-      //         .then((paymentMethod: any) => {
-      //           if (paymentMethod !== null && paymentMethod !== undefined) {
-      //             if (paymentMethod.slug === "stripe") {
-      //               // Create stripe customer
-      //               stripeCustomerService
-      //                 .store({
-      //                   name: data.message.name,
-      //                   email: data.message.email,
-      //                   phone: data.message.phone,
-      //                   payment_method: data.message.payment_data.id,
-      //                   user: data.message.user,
-      //                 })
-      //                 .then((createdStripeCustomer: any) => {
-      //                   // Create payment intent
-      //                   stripePaymentIntentService
-      //                     .store({
-      //                       amount: data.message.amount,
-      //                       currency: data.message.currency,
-      //                       customer: createdStripeCustomer.id,
-      //                       confirm: data.message.confirm,
-      //                       payment_method: data.message.payment_data.id,
-      //                       "automatic_payment_methods[enabled]": data.message.confirm,
-      //                       "automatic_payment_methods[allow_redirects]": data.message.confirm ? "never" : "always",
-      //                       description: data.message.description,
-      //                     })
-      //                     .then((createdStripePaymentIntent: any) => {
-      //                       // Pay order
-      //                       rabbitmqManager
-      //                         .publishMessage(
-      //                           "kitecoleExchange",
-      //                           "updateOrderPaymentStatus",
-      //                           {
-      //                             order: data.message.order,
-      //                             is_paid: true,
-      //                             paid_at: new Date(),
-      //                           }
-      //                         )
-      //                         .then(() => {
-      //                           console.log(createdStripePaymentIntent);
-      //                         })
-      //                         .catch((error) => {
-      //                           console.log(error);
-      //                         });
-
-      //                       dbConenction.disconnect();
-      //                     })
-      //                     .catch((err) => {
-      //                       console.log(err);
-      //                       dbConenction.disconnect();
-      //                     });
-      //                 })
-      //                 .catch((err) => {
-      //                   console.log(err);
-      //                   dbConenction.disconnect();
-      //                 });
-      //             } else if(paymentMethod.slug === "paypal") {
-      //               paypalOrderService.captureOrder(data.message.payment_data.id);
-      //               console.log("Payment method not exist");
-      //             }
-      //           } else {
-      //             console.log("Payment method not exist");
-      //           }
-      //         })
-      //         .catch((err) => {
-      //           console.log(err);
-      //           dbConenction.disconnect();
-      //         });
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-
-      //   channel.ack(msg);
-      // });
     } catch (error) {
       console.error("Failed to set up RabbitMQ subscription:", error);
     }
@@ -183,25 +84,23 @@ class PaymentSubscribe {
           user: data.message.user,
         });
 
-        const createdStripePaymentIntent =
-          await stripePaymentIntentService.store({
-            amount:
-              data.message.currency === "USD" ||
-              data.message.currency === "EURO"
-                ? Math.round(data.message.amount * 100) // Conversion en centimes pour USD/EURO
-                : ["JPY", "KRW", "VND"].includes(data.message.currency)
-                ? Math.round(data.message.amount) // Pas de conversion pour les devises sans subdivisions
-                : Math.round(data.message.amount * 100), // Par défaut, conversion en centimes
-            currency: data.message.currency,
-            customer: createdStripeCustomer.id,
-            confirm: data.message.confirm,
-            payment_method: data.message.payment_data.id,
-            "automatic_payment_methods[enabled]": data.message.confirm,
-            "automatic_payment_methods[allow_redirects]": data.message.confirm
-              ? "never"
-              : "always",
-            description: data.message.description,
-          });
+        await stripePaymentIntentService.store({
+          amount:
+            data.message.currency === "USD" || data.message.currency === "EURO"
+              ? Math.round(data.message.amount * 100) // Conversion en centimes pour USD/EURO
+              : ["JPY", "KRW", "VND"].includes(data.message.currency)
+              ? Math.round(data.message.amount) // Pas de conversion pour les devises sans subdivisions
+              : Math.round(data.message.amount * 100), // Par défaut, conversion en centimes
+          currency: data.message.currency,
+          customer: createdStripeCustomer.id,
+          confirm: data.message.confirm,
+          payment_method: data.message.payment_data.id,
+          "automatic_payment_methods[enabled]": data.message.confirm,
+          "automatic_payment_methods[allow_redirects]": data.message.confirm
+            ? "never"
+            : "always",
+          description: data.message.description,
+        });
 
         await rabbitmqManager.publishMessage(
           "eluxe.payment.updateOrderPaymentStatus",
@@ -221,6 +120,16 @@ class PaymentSubscribe {
             order: data.message.order,
             is_paid: true,
             paid_at: new Date(),
+          }
+        );
+      } else {
+        await rabbitmqManager.publishMessage(
+          "eluxe.payment.updateOrderPaymentStatus",
+          "updateOrderPaymentStatus",
+          {
+            order: data.message.order,
+            is_paid: false,
+            paid_at: null,
           }
         );
       }

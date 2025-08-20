@@ -2,12 +2,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const dev = {
+const local = {
   // Environment
   env: process.env.NODE_ENV || "local",
 
   // Server config
-  nodeServerPort: process.env.NODE_SERVER_PORT || 2400,
+  nodeServerPort: process.env.NODE_SERVER_PORT || 4004,
   nodeServerHost: process.env.NODE_SERVER_HOST || "localhost",
   nodeServerPublicKey: process.env.NODE_SERVER_PUBLIC_KEY?.replace(
     /\\n/g,
@@ -15,7 +15,9 @@ const dev = {
   ),
 
   // API GATEWAY URL
-  apiGatewayUrl: process.env.API_GATEWAY_URL || "http://localhost:2000",
+  apiGatewayUrl: process.env.API_GATEWAY_URL || "http://localhost:4000",
+  webClientUrl: process.env.WEB_CLIENT_URL || "http://localhost:7001",
+  webBackofficeUrl: process.env.WEB_BACKOFFICE_URL || "http://localhost:5001",
 
   // Redis db
   redisDbPort: process.env.REDIS_DB_PORT || 6379,
@@ -42,4 +44,4 @@ const dev = {
   swaggerBaseUrl: process.env.SWAGGER_BASE_URL || "/v1/payments/docs",
 };
 
-export default dev;
+export default local;
