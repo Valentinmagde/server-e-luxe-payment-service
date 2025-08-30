@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import dotenv from "dotenv";
-import routesGrouping from "../../utils/routes-grouping.util";
+import routesGrouping from "../../../utils/routes-grouping.util";
 import paypalOrderController from "./paypal-order.controller";
 
 dotenv.config();

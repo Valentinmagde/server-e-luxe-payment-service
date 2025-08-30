@@ -1,7 +1,5 @@
 import { Application, Request, Response } from "express";
-import
-  swaggerOptions
-  from "../../resources/swagger/payment-docs";
+import swaggerOptions from "../../resources/swagger/payment-docs";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routesGrouping from "../utils/routes-grouping.util";
@@ -11,20 +9,17 @@ import customResponse from "../utils/custom-response.util";
 import i18n from "../../core/i18n";
 import setLocale from "../middlewares/set-locale.middleware";
 import authorization from "../middlewares/authorization.middleware";
-import
-  paymentMethodRoutes
-  from "../modules/payment-method/payment-method.routes";
+import paymentMethodRoutes from "../modules/payment-method/payment-method.routes";
 import systemRoutes from "../modules/system/system.routes";
-import
-  stripeCustomerRoutes
-  from "../modules/stripe-customer/stripe-customer.routes";
-import
-  stripePaymentMethodRoutes
-  from "../modules/stripe-payment-method/stripe-payment-method.routes";
-import
-  stripePaymentIntentRoutes
-  from "../modules/stripe-payment-intent/stripe-payment-intent.routes";
-import paypalOrderRoutes from "../modules/paypal-order/paypal-order.routes";
+import stripeCustomerRoutes from "../modules/stripe/stripe-customer/stripe-customer.routes";
+import stripePaymentMethodRoutes from "../modules/stripe/stripe-payment-method/stripe-payment-method.routes";
+import stripePaymentIntentRoutes from "../modules/stripe/stripe-payment-intent/stripe-payment-intent.routes";
+import paypalOrderRoutes from "../modules/paypal/paypal-order/paypal-order.routes";
+import airwallexPaymentIntentRoutes
+from "../modules/airwallex/airwallex-payment-intent/airwallex-payment-intent.routes";
+import airwallexCustomerRoutes from "../modules/airwallex/airwallex-customer/airwallex-customer.routes";
+import airwallexPaymentMethodRoutes
+from "../modules/airwallex/airwallex-payment-method/airwallex-payment-method.routes";
 
 /**
  * @author Valentin Magde <valentinmagde@gmail.com>
@@ -66,7 +61,6 @@ class Routes {
           setLocale.setLocale,
           authorization.isAuth,
           routesGrouping.group((router) => {
-
             // Includes payment method routes
             router.use(paymentMethodRoutes.paymentMethodRoutes());
 
@@ -84,13 +78,27 @@ class Routes {
 
             // Includes paypal orders routes
             router.use(paypalOrderRoutes.paypalOrderRoutes());
+
+            // Includes airwallex payment intent routes
+            router.use(
+              airwallexPaymentIntentRoutes.airwallexPaymentIntentRoutes()
+            );
+
+            // Includes airwallex customer routes
+            router.use(airwallexCustomerRoutes.airwallexCustomerRoutes());
+
+            // Includes airwallex payment method routes
+            router.use(
+              airwallexPaymentMethodRoutes.airwallexPaymentMethodRoutes()
+            );
           })
         );
 
         // Swagger documentation
         router.use(
           "/payments/docs",
-          swaggerUi.serve, swaggerUi.setup(this.specs)
+          swaggerUi.serve,
+          swaggerUi.setup(this.specs)
         );
         router.get("/payments/docs.json", (req, res) => {
           res.setHeader("Content-Type", "application/json");

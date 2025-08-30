@@ -1,54 +1,54 @@
 import express, { Router } from "express";
 import dotenv from "dotenv";
-import routesGrouping from "../../utils/routes-grouping.util";
-import stripePaymentMethodController from "./stripe-payment-method.controller";
+import routesGrouping from "../../../utils/routes-grouping.util";
+import airwallexCustomerController from "./airwallex-customer.controller";
 
 dotenv.config();
 
 /**
  * @author Valentin Magde <valentinmagde@gmail.com>
- * @since 2023-08-30
+ * @since 2025-08-29
  *
- * Class StripePaymentMethodRoutes
+ * Class AirwallexCustomerRoutes
  */
-class StripePaymentMethodRoutes {
+class AirwallexCustomerRoutes {
   private router: Router;
 
   /**
    * Create a new Routes instance.
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2025-08-29
    */
   constructor() {
     this.router = express.Router({ mergeParams: true });
   }
 
   /**
-   * Creating all stripe payment methods routes
+   * Creating all airwallex customers routes
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2025-08-29
    *
-   * @returns {Router} all stripe payment methods routes
+   * @returns {Router} all airwallex customers routes
    */
-  public stripePaymentMethodRoutes(): Router {
+  public airwallexCustomerRoutes(): Router {
     return this.router.use(
       routesGrouping.group((router) => {
         router.use(
-          "/stripePaymentMethods",
+          "/airwallexCustomers",
           routesGrouping.group((router) => {
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentMethods:
+             * /v1/{lang}/airwallexCustomers:
              *   post:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Method
+             *     - Airwallex Customer
              *     operationId: store
-             *     summary: Create a new stripe payment method.
-             *     description: Add stripe payment method into the system.
+             *     summary: Create a new airwallex customer.
+             *     description: Add airwallex customer into the system.
              *     parameters:
              *      - in: path
              *        name: lang
@@ -62,43 +62,53 @@ class StripePaymentMethodRoutes {
              *     requestBody:
              *       required: true
              *       content:
+             *         application/x-www-form-urlencoded:
+             *           schema:
+             *             type: object
+             *             properties:
+             *               name:
+             *                 type: string
+             *                 description: The stripe customer name.
+             *               email:
+             *                 type: string
+             *                 description: The stripe customer email.
+             *               phone:
+             *                 type: string
+             *                 description: The stripe customer phone.
+             *               user:
+             *                 type: string
+             *                 description: The user id.
+             *             required:
+             *               - name
+             *               - email
+             *               - phone
+             *               - user
+             *
              *         application/json:
              *           schema:
              *             type: object
              *             properties:
-             *               type:
+             *               name:
              *                 type: string
-             *                 description: The type of the stripe
-             *                              PaymentMethod.
-             *                 example: card
-             *                 required: true
-             *               card:
-             *                 type: object
-             *                 properties:
-             *                   number:
-             *                     type: number
-             *                     description: The stripe card number.
-             *                     example: 4242424242424242
-             *                     required: true
-             *                   exp_month:
-             *                     type: number
-             *                     description: The stripe card expiry month.
-             *                     example: 12
-             *                     required: true
-             *                   exp_year:
-             *                     type: number
-             *                     description: The stripe card expiry year.
-             *                     example: 2034
-             *                     required: true
-             *                   cvc:
-             *                     type: number
-             *                     description: The stripe card cvc.
-             *                     example: 314
-             *                     required: true
+             *                 description: The stripe customer name.
+             *               email:
+             *                 type: string
+             *                 description: The stripe customer email.
+             *               phone:
+             *                 type: string
+             *                 description: The stripe customer phone.
+             *               user:
+             *                 type: string
+             *                 description: The user id.
+             *             required:
+             *               - name
+             *               - email
+             *               - phone
+             *               - user
              *
              *     responses:
              *       201:
-             *         description: Stripe payment method successfully created.
+             *         description: Airwallex customer successfully created.
              *         content:
              *           application/json:
              *             schema:
@@ -108,7 +118,7 @@ class StripePaymentMethodRoutes {
              *                    type: string
              *                    example: Ok
              *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentMethod'
+             *                    $ref: '#/components/schemas/AirwallexCustomer'
              *
              *       400:
              *         description: Bad Request.
@@ -138,19 +148,19 @@ class StripePaymentMethodRoutes {
              *              $ref: '#/responses/schemas/500'
              *
              */
-            router.post("/", stripePaymentMethodController.store);
+            router.post("/", airwallexCustomerController.store);
 
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentMethods:
+             * /v1/{lang}/airwallexCustomers:
              *   get:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Method
-             *     operationId: showAllStripePaymentMethods
-             *     summary: Get all stripe payment methods.
-             *     description: Get all stripe payment methods from the system.
+             *     - Airwallex Customer
+             *     operationId: showAllAirwallexCustomers
+             *     summary: Get all airwallex customers.
+             *     description: Get all airwallex customers from the system.
              *     parameters:
              *      - in: path
              *        name: lang
@@ -163,8 +173,8 @@ class StripePaymentMethodRoutes {
              *
              *     responses:
              *       200:
-             *         description: The stripe payment methods have been
-             *                      successfully recovered.
+             *         description: The airwallex customers have been successfully
+             *                      recovered.
              *         content:
              *           application/json:
              *             schema:
@@ -176,7 +186,7 @@ class StripePaymentMethodRoutes {
              *                  data:
              *                    type: array
              *                    items:
-             *                      $ref: '#/components/schemas/StripePaymentMethod'
+             *                      $ref: '#/components/schemas/AirwallexCustomer'
              *
              *       400:
              *         description: Bad Request.
@@ -206,104 +216,19 @@ class StripePaymentMethodRoutes {
              *              $ref: '#/responses/schemas/500'
              *
              */
-            router.get(
-              "/",
-              stripePaymentMethodController.getStripePaymentMethods
-            );
+            router.get("/", airwallexCustomerController.getAirwallexCustomers);
 
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentMethods/stripeCustomer/{stripeCustomerId}:
+             * /v1/{lang}/airwallexCustomers/user/{userId}:
              *   get:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Method
-             *     operationId: showByStripeCustomer
-             *     summary: Get stripe payment methods by stripe customer ID.
-             *     description: Get stripe payment methods by stripe customer
-             *                  id from the system.
-             *     parameters:
-             *      - in: path
-             *        name: lang
-             *        schema:
-             *          type: string
-             *          example: en
-             *        required: true
-             *        description: Language for the response. Supported
-             *          languages ['en', 'fr']
-             *      - in: path
-             *        name: stripeCustomerId
-             *        schema:
-             *          type: string
-             *        required: true
-             *        description: String ID of the system
-             *
-             *     responses:
-             *       200:
-             *         description: The stripe payment methods have successfully
-             *                      retrieve.
-             *         content:
-             *           application/json:
-             *             schema:
-             *                type: object
-             *                properties:
-             *                  status:
-             *                    type: string
-             *                    example: Ok
-             *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentMethod'
-             *
-             *       '400':
-             *         description: Bad Request.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/400'
-             *
-             *       '401':
-             *         description: Unauthorized.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/401'
-             *
-             *       '404':
-             *         description: Not Found.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/404'
-             *
-             *       '500':
-             *         description: Internal Server Error.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/500'
-             *
-             */
-            router.get(
-              "/stripeCustomer/:stripeCustomerId",
-              stripePaymentMethodController.getStripePaymentMethodsByCustomer
-            );
-          })
-        );
-
-        router.use(
-          "/stripePaymentMethod",
-          routesGrouping.group((router) => {
-            /**
-             * @swagger
-             * /v1/{lang}/stripePaymentMethod/{stripePaymentMethodId}:
-             *   get:
-             *     security:
-             *      - bearerAuth: []
-             *     tags:
-             *     - Stripe Payment Method
-             *     operationId: show
-             *     summary: Get a stripe payment method by ID.
-             *     description: Get a stripe payment method by id from
+             *     - Airwallex Customer
+             *     operationId: showByUser
+             *     summary: Get airwallex customers by user ID.
+             *     description: Get airwallex customers by user id from
              *                  the system.
              *     parameters:
              *      - in: path
@@ -315,15 +240,15 @@ class StripePaymentMethodRoutes {
              *        description: Language for the response. Supported
              *          languages ['en', 'fr']
              *      - in: path
-             *        name: stripePaymentMethodId
+             *        name: userId
              *        schema:
              *          type: string
              *        required: true
-             *        description: String ID of the stripe payment method to get
+             *        description: String ID of the system
              *
              *     responses:
              *       200:
-             *         description: The stripe payment method has successfully
+             *         description: The airwallex customers have successfully
              *                      retrieve.
              *         content:
              *           application/json:
@@ -334,7 +259,7 @@ class StripePaymentMethodRoutes {
              *                    type: string
              *                    example: Ok
              *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentMethod'
+             *                    $ref: '#/components/schemas/AirwallexCustomer'
              *
              *       '400':
              *         description: Bad Request.
@@ -366,21 +291,26 @@ class StripePaymentMethodRoutes {
              *
              */
             router.get(
-              "/:stripePaymentMethodId",
-              stripePaymentMethodController.getStripePaymentMethodById
+              "/user/:userId",
+              airwallexCustomerController.getAirwallexCustomersByUser
             );
+          })
+        );
 
+        router.use(
+          "/airwallexCustomer",
+          routesGrouping.group((router) => {
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentMethod/{stripePaymentMethodId}/stripeCustomer/{stripeCustomerId}/attach:
+             * /v1/{lang}/airwallexCustomer/{airwallexCustomerId}:
              *   get:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Method
-             *     operationId: attachPaymentMethod
-             *     summary: Attach a payment method to a customer.
-             *     description: Attach a payment method to a customer.
+             *     - Airwallex Customer
+             *     operationId: show
+             *     summary: Get a airwallex customer by ID.
+             *     description: Get a airwallex customer by id from the system.
              *     parameters:
              *      - in: path
              *        name: lang
@@ -391,11 +321,81 @@ class StripePaymentMethodRoutes {
              *        description: Language for the response. Supported
              *          languages ['en', 'fr']
              *      - in: path
-             *        name: stripePaymentMethodId
+             *        name: airwallexCustomerId
              *        schema:
              *          type: string
              *        required: true
-             *        description: String ID of the payment method to get
+             *        description: String ID of the airwallex customer to get
+             *
+             *     responses:
+             *       200:
+             *         description: The airwallex customer has successfully
+             *                      retrieve.
+             *         content:
+             *           application/json:
+             *             schema:
+             *                type: object
+             *                properties:
+             *                  status:
+             *                    type: string
+             *                    example: Ok
+             *                  data:
+             *                    $ref: '#/components/schemas/AirwallexCustomer'
+             *
+             *       '400':
+             *         description: Bad Request.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/400'
+             *
+             *       '401':
+             *         description: Unauthorized.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/401'
+             *
+             *       '404':
+             *         description: Not Found.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/404'
+             *
+             *       '500':
+             *         description: Internal Server Error.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/500'
+             *
+             */
+            router.get(
+              "/:airwallexCustomerId",
+              airwallexCustomerController.getAirwallexCustomerById
+            );
+
+            /**
+             * @swagger
+             * /v1/{lang}/stripeCustomer/{stripeCustomerId}:
+             *   put:
+             *     security:
+             *      - bearerAuth: []
+             *     tags:
+             *     - Stripe Customer
+             *     operationId: stripeCustomerUpdate
+             *     summary: Update a stripe customer by ID.
+             *     description: Update a stripe customer by ID.
+             *     parameters:
+             *      - in: path
+             *        name: lang
+             *        schema:
+             *          type: string
+             *          example: en
+             *        required: true
+             *        description: Language for the response. Supported
+             *          languages ['en', 'fr']
              *      - in: path
              *        name: stripeCustomerId
              *        schema:
@@ -403,239 +403,49 @@ class StripePaymentMethodRoutes {
              *        required: true
              *        description: String ID of the stripe customer to get
              *
-             *     responses:
-             *       200:
-             *         description: The stripe payment method successfully
-             *                      attached to a stripe customer.
-             *         content:
-             *           application/json:
-             *             schema:
-             *                type: object
-             *                properties:
-             *                  status:
-             *                    type: string
-             *                    example: Ok
-             *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentMethod'
-             *
-             *       '400':
-             *         description: Bad Request.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/400'
-             *
-             *       '401':
-             *         description: Unauthorized.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/401'
-             *
-             *       '404':
-             *         description: Not Found.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/404'
-             *
-             *       '500':
-             *         description: Internal Server Error.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/500'
-             *
-             */
-            router.get(
-              "/:stripePaymentMethodId/stripeCustomer/:stripeCustomerId/attach",
-              stripePaymentMethodController.attach
-            );
-
-            /**
-             * @swagger
-             * /v1/{lang}/stripePaymentMethod/{stripePaymentMethodId}/stripeCustomer/detach:
-             *   get:
-             *     security:
-             *      - bearerAuth: []
-             *     tags:
-             *     - Stripe Payment Method
-             *     operationId: detachPaymentMethod
-             *     summary: Detach a PaymentMethod from a Customer.
-             *     description: Detach a PaymentMethod from a Customer.
-             *     parameters:
-             *      - in: path
-             *        name: lang
-             *        schema:
-             *          type: string
-             *          example: en
-             *        required: true
-             *        description: Language for the response. Supported
-             *          languages ['en', 'fr']
-             *      - in: path
-             *        name: stripePaymentMethodId
-             *        schema:
-             *          type: string
-             *        required: true
-             *        description: String ID of the stripe payment method to get
-             *
-             *     responses:
-             *       200:
-             *         description: The payment method detach successfully from
-             *                      a customer.
-             *         content:
-             *           application/json:
-             *             schema:
-             *                type: object
-             *                properties:
-             *                  status:
-             *                    type: string
-             *                    example: Ok
-             *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentMethod'
-             *
-             *       '400':
-             *         description: Bad Request.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/400'
-             *
-             *       '401':
-             *         description: Unauthorized.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/401'
-             *
-             *       '404':
-             *         description: Not Found.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/404'
-             *
-             *       '500':
-             *         description: Internal Server Error.
-             *         content:
-             *          application/json:
-             *             schema:
-             *              $ref: '#/responses/schemas/500'
-             *
-             */
-            router.get(
-              "/:stripePaymentMethodId/stripeCustomer/detach",
-              stripePaymentMethodController.detach
-            );
-
-            /**
-             * @swagger
-             * /v1/{lang}/stripePaymentMethod/{stripePaymentMethodId}:
-             *   put:
-             *     security:
-             *      - bearerAuth: []
-             *     tags:
-             *     - Stripe Payment Method
-             *     operationId: updateStripePaymentMethod
-             *     summary: Update a stripe payment method by ID.
-             *     description: Update a stripe payment method by ID.
-             *     parameters:
-             *      - in: path
-             *        name: lang
-             *        schema:
-             *          type: string
-             *          example: en
-             *        required: true
-             *        description: Language for the response. Supported
-             *          languages ['en', 'fr']
-             *      - in: path
-             *        name: stripePaymentMethodId
-             *        schema:
-             *          type: string
-             *        required: true
-             *        description: String ID of the stripe payment method to get
-             *
              *     requestBody:
              *       required: true
              *       content:
-             *         application/json:
+             *         application/x-www-form-urlencoded:
              *           schema:
              *            type: object
              *            properties:
              *              object:
              *                type: string
-             *                example: payment_method
-             *              billing_details:
-             *                type: object
-             *                properties:
-             *                  address:
-             *                    type: object
-             *                    properties:
-             *                      city:
-             *                        type: string
-             *                      country:
-             *                        type: string
-             *                      line1:
-             *                        type: string
-             *                      line2:
-             *                        type: string
-             *                      postal_code:
-             *                        type: string
-             *                      state:
-             *                        type: string
-             *                  email:
-             *                    type: string
-             *                  name:
-             *                    type: string
-             *                  phone:
-             *                    type: string
-             *              card:
-             *                type: object
-             *                properties:
-             *                  brand:
-             *                    type: string
-             *                  checks:
-             *                    type: object
-             *                    properties:
-             *                      address_line1_check:
-             *                        type: string
-             *                      address_postal_code_check:
-             *                        type: string
-             *                      cvc_check:
-             *                        type: string
-             *                  country:
-             *                    type: string
-             *                  exp_month:
-             *                    type: number
-             *                  exp_year:
-             *                    type: number
-             *                  fingerprint:
-             *                    type: string
-             *                  funding:
-             *                    type: string
-             *                  generated_from:
-             *                    type: string
-             *                  last4:
-             *                    type: number
-             *                  networks:
-             *                    type: object
-             *                    properties:
-             *                      available:
-             *                        type: array
-             *                        items:
-             *                      preferred:
-             *                        type: string
-             *                  three_d_secure_usage:
-             *                    type: object
-             *                    properties:
-             *                      supported:
-             *                        type: boolean
-             *                  wallet:
-             *                    type: string
+             *                example: customer
+             *              address:
+             *                type: string
              *              balance:
              *                type: number
-             *              customer:
+             *                example: 0
+             *              name:
              *                type: string
+             *              currency:
+             *                type: string
+             *              default_source:
+             *                type: string
+             *              delinquent:
+             *                type: boolean
+             *                example: false
+             *              description:
+             *                type: string
+             *              discount:
+             *                type: string
+             *              email:
+             *                type: string
+             *              invoice_prefix:
+             *                type: string
+             *              invoice_settings:
+             *                type: object
+             *                properties:
+             *                  custom_field:
+             *                    type: string
+             *                  default_payment_method:
+             *                    type: string
+             *                  footer:
+             *                    type: string
+             *                  rendering_options:
+             *                    type: string
              *              livemode:
              *                type: boolean
              *                example: false
@@ -644,15 +454,97 @@ class StripePaymentMethodRoutes {
              *                properties:
              *                  order_id:
              *                    type: string
-             *              type:
+             *              next_invoice_sequence:
+             *                type: number
+             *              phone:
+             *                type: string
+             *              preferred_locales:
+             *                type: array
+             *              shipping:
+             *                type: string
+             *              tax_exempt:
+             *                type: string
+             *              test_clock:
+             *                type: string
+             *              user:
              *                type: string
              *            required:
-             *              - metadata
+             *              - name
+             *              - email
+             *              - phone
+             *              - user
+             *
+             *         application/json:
+             *           schema:
+             *            type: object
+             *            properties:
+             *              object:
+             *                type: string
+             *                example: customer
+             *              address:
+             *                type: string
+             *              balance:
+             *                type: number
+             *                example: 0
+             *              name:
+             *                type: string
+             *              currency:
+             *                type: string
+             *              default_source:
+             *                type: string
+             *              delinquent:
+             *                type: boolean
+             *                example: false
+             *              description:
+             *                type: string
+             *              discount:
+             *                type: string
+             *              email:
+             *                type: string
+             *              invoice_prefix:
+             *                type: string
+             *              invoice_settings:
+             *                type: object
+             *                properties:
+             *                  custom_field:
+             *                    type: string
+             *                  default_payment_method:
+             *                    type: string
+             *                  footer:
+             *                    type: string
+             *                  rendering_options:
+             *                    type: string
+             *              livemode:
+             *                type: boolean
+             *                example: false
+             *              metadata:
+             *                type: object
+             *                properties:
+             *                  order_id:
+             *                    type: string
+             *              next_invoice_sequence:
+             *                type: number
+             *              phone:
+             *                type: string
+             *              preferred_locales:
+             *                type: array
+             *              shipping:
+             *                type: string
+             *              tax_exempt:
+             *                type: string
+             *              test_clock:
+             *                type: string
+             *              user:
+             *                type: string
+             *            required:
+             *              - name
+             *              - email
+             *              - phone
+             *              - user
              *
              *     responses:
              *       200:
-             *         description: The stripe payment method has
-             *                      successfully update.
+             *         description: The airwallex customer has successfully update.
              *         content:
              *           application/json:
              *             schema:
@@ -662,7 +554,7 @@ class StripePaymentMethodRoutes {
              *                    type: string
              *                    example: Ok
              *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentMethod'
+             *                    $ref: '#/components/schemas/AirwallexCustomer'
              *
              *       '400':
              *         description: Bad Request.
@@ -693,9 +585,71 @@ class StripePaymentMethodRoutes {
              *              $ref: '#/responses/schemas/500'
              *
              */
-            router.put(
-              "/:stripePaymentMethodId",
-              stripePaymentMethodController.update
+            router.put("/:airwallexCustomerId", airwallexCustomerController.update);
+
+            /**
+             * @swagger
+             * /v1/{lang}/airwallexCustomer/{airwallexCustomerId}:
+             *   delete:
+             *     security:
+             *      - bearerAuth: []
+             *     tags:
+             *     - Airwallex Customer
+             *     operationId: delete
+             *     summary: Delete a airwallex customer by ID.
+             *     description: Delete a airwallex customer by ID.
+             *     parameters:
+             *      - in: path
+             *        name: lang
+             *        schema:
+             *          type: string
+             *          example: en
+             *        required: true
+             *        description: Language for the response. Supported
+             *          languages ['en', 'fr']
+             *      - in: path
+             *        name: airwallexCustomerId
+             *        schema:
+             *          type: string
+             *        required: true
+             *        description: String ID of the airwallex customer to delete
+             *
+             *     responses:
+             *       204:
+             *         description: The airwallex customer delete successfully.
+             *
+             *       '400':
+             *         description: Bad Request.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/400'
+             *
+             *       '401':
+             *         description: Unauthorized.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/401'
+             *
+             *       '404':
+             *         description: Not Found.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/404'
+             *
+             *       '500':
+             *         description: Internal Server Error.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/500'
+             *
+             */
+            router.delete(
+              "/:airwallexCustomerId",
+              airwallexCustomerController.delete
             );
           })
         );
@@ -704,5 +658,5 @@ class StripePaymentMethodRoutes {
   }
 }
 
-const stripePaymentMethodRoutes = new StripePaymentMethodRoutes();
-export default stripePaymentMethodRoutes;
+const airwallexCustomerRoutes = new AirwallexCustomerRoutes();
+export default airwallexCustomerRoutes;

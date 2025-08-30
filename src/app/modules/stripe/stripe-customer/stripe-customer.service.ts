@@ -1,6 +1,6 @@
 import StripeCustomer from "./stripe-customer.model";
-import { stripe } from "../../../core/stripe";
-import { _omit } from "../../utils/helpers.util";
+import { stripe } from "../../../../core/stripe";
+import { _omit } from "../../../utils/helpers.util";
 
 /**
  * @author Valentin Magde <valentinmagde@gmail.com>

@@ -1,45 +1,47 @@
 import { Request, Response } from "express";
-import i18n from "../../../core/i18n";
-import customResponse from "../../utils/custom-response.util";
-import statusCode from "../../utils/status-code.util";
-import errorNumbers from "../../utils/error-numbers.util";
-import validator from "../../utils/validator.util";
+import i18n from "../../../../core/i18n";
+import customResponse from "../../../utils/custom-response.util";
+import statusCode from "../../../utils/status-code.util";
+import errorNumbers from "../../../utils/error-numbers.util";
+import validator from "../../../utils/validator.util";
 import { Errors } from "validatorjs";
-import stripePaymentMethodService from "./stripe-payment-method.service";
-import { checkObjectId } from "../../utils/helpers.util";
+import { checkObjectId } from "../../../utils/helpers.util";
+import airwallexPaymentIntentService from "./airwallex-payment-intent.service";
+
 /**
  * @author Valentin Magde <valentinmagde@gmail.com>
- * @since 2023-09-02
+ * @since 2025-08-28
  *
- * Class StripePaymentMethodController
+ * Class AirwallexPaymentIntentController
  */
-class StripePaymentMethodController {
+class AirwallexPaymentIntentController {
   /**
-   * Get stripe payment method details handler
+   * Get airwallex payment intent details handler
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
    * @param {Request} req the http request
    * @param {Response} res the http response
    *
    * @return {Promise<void>} the eventual completion or failure
    */
-  public async getStripePaymentMethodById(
+  public async getAirwallexPaymentIntentById(
     req: Request,
     res: Response
   ): Promise<void> {
-    const stripePaymentMethodId = req.params.stripePaymentMethodId;
-    if (checkObjectId(stripePaymentMethodId)) {
-      stripePaymentMethodService
-        .getStripePaymentMethodById(stripePaymentMethodId)
+    const airwallexPaymentIntentId = req.params.airwallexPaymentIntentId;
+
+    if (checkObjectId(airwallexPaymentIntentId)) {
+      airwallexPaymentIntentService
+        .getAirwallexPaymentIntentById(airwallexPaymentIntentId)
         .then((result) => {
           if (result === null || result === undefined) {
             const response = {
               status: statusCode.httpNotFound,
               errNo: errorNumbers.resourceNotFound,
               errMsg: i18n.__(
-                "stripePaymentMethod.stripePaymentMethodNotFound"
+                "stripePaymentIntent.stripePaymentIntentNotFound"
               ),
             };
 
@@ -66,7 +68,7 @@ class StripePaymentMethodController {
       const response = {
         status: statusCode.httpBadRequest,
         errNo: errorNumbers.ivalidResource,
-        errMsg: i18n.__("stripePaymentMethod.invalidStripePaymentMethodId"),
+        errMsg: i18n.__("stripePaymentIntent.invalidStripePaymentIntentId"),
       };
 
       return customResponse.error(response, res);
@@ -74,31 +76,42 @@ class StripePaymentMethodController {
   }
 
   /**
-   * Get stripe payment methods by customer handler
+   * Get airwallex payment intents by customer handler
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
    * @param {Request} req the http request
    * @param {Response} res the http response
    *
    * @return {Promise<void>} the eventual completion or failure
    */
-  public async getStripePaymentMethodsByCustomer(
+  public async getAirwallexPaymentIntentsByCustomer(
     req: Request,
     res: Response
   ): Promise<void> {
-    const stripeCustomerId = req.params.stripeCustomerId;
-    if (checkObjectId(stripeCustomerId)) {
-      stripePaymentMethodService
-        .getStripePaymentMethodsByCustomer(stripeCustomerId)
+    const airwallexCustomerId = req.params.airwallexCustomerId;
+    if (checkObjectId(airwallexCustomerId)) {
+      airwallexPaymentIntentService
+        .getAirwallexPaymentIntentsByCustomer(airwallexCustomerId)
         .then((result) => {
-          const response = {
-            status: statusCode.httpOk,
-            data: result,
-          };
+          if(result === null || result === undefined){
+            const response = {
+              status: statusCode.httpBadRequest,
+              errNo: errorNumbers.ivalidResource,
+              errMsg: i18n.__("stripePaymentIntent.stripeCustomerNotFound"),
+            };
 
-          return customResponse.success(response, res);
+            return customResponse.error(response, res);
+          }
+          else{
+            const response = {
+              status: statusCode.httpOk,
+              data: result,
+            };
+
+            return customResponse.success(response, res);
+          }
         })
         .catch((error) => {
           const response = {
@@ -113,7 +126,7 @@ class StripePaymentMethodController {
       const response = {
         status: statusCode.httpBadRequest,
         errNo: errorNumbers.ivalidResource,
-        errMsg: i18n.__("stripePaymentMethod.invalidCustomerId"),
+        errMsg: i18n.__("stripePaymentIntent.invalidCustomerId"),
       };
 
       return customResponse.error(response, res);
@@ -121,22 +134,22 @@ class StripePaymentMethodController {
   }
 
   /**
-   * Get all stripe payment methods handler
+   * Get all airwallex payment intents handler
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
    * @param {Request} req the http request
    * @param {Response} res the http response
    *
    * @return {Promise<void>} the eventual completion or failure
    */
-  public async getStripePaymentMethods(
+  public async getAirwallexPaymentIntents(
     req: Request,
     res: Response
   ): Promise<void> {
-    stripePaymentMethodService
-      .getStripePaymentMethods()
+    airwallexPaymentIntentService
+      .getAirwallexPaymentIntents()
       .then((result) => {
         const response = {
           status: statusCode.httpOk,
@@ -157,10 +170,10 @@ class StripePaymentMethodController {
   }
 
   /**
-   * Add new stripe payment method handler
+   * Add new airwallex payment intent handler
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
    * @param {Request} req the http request
    * @param {Response} res the http response
@@ -169,13 +182,12 @@ class StripePaymentMethodController {
    */
   public async store(req: Request, res: Response): Promise<void> {
     const validationRule = {
-      type: "required|string",
-      card: {
-        number: "required",
-        exp_month: "required",
-        exp_year: "required",
-        cvc: "required"
-      }
+      merchant_order_id: "required",
+      request_id: "required",
+      descriptor: "required",
+      return_url: "required",
+      amount: "required",
+      currency: "required",
     };
 
     await validator
@@ -193,7 +205,7 @@ class StripePaymentMethodController {
 
             return customResponse.error(response, res);
           } else {
-            stripePaymentMethodService
+            airwallexPaymentIntentService
               .store(req.body)
               .then((result) => {
                 const response = {
@@ -227,99 +239,97 @@ class StripePaymentMethodController {
   }
 
   /**
-   * Attach stripe payment method to customer
+   * Confirm airwallex payment intent
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-08-29
+   * @since 2025-08-28
    *
    * @param {Request} req the http request
    * @param {Response} res the http response
    *
    * @return {Promise<void>} the eventual completion or failure
    */
-  public async attach(req: Request, res: Response): Promise<void> {
-    const stripeCustomerId = req.params.stripeCustomerId;
-    const stripePaymentMethodId = req.params.stripePaymentMethodId;
+  public async confirmAirwallexPaymentIntent(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const airwallexPaymentIntentId = req.params.airwallexPaymentIntentId;
 
-    if (!checkObjectId(stripeCustomerId)) {
-      const response = {
-        status: statusCode.httpBadRequest,
-        errNo: errorNumbers.ivalidResource,
-        errMsg: i18n.__(
-          "stripePaymentMethod.invalidStripePaymentMethodId"
-        ),
-      };
-
-      return customResponse.error(response, res);
-    } else {
-      stripePaymentMethodService
-        .attach(stripePaymentMethodId, stripeCustomerId)
-        .then((result) => {
-          if (result === "STRIPE_PAYMENT_METHOD_NOT_FOUND") {
-            const response = {
-              status: statusCode.httpNotFound,
-              errNo: errorNumbers.resourceNotFound,
-              errMsg: i18n.__(
-                "stripePaymentMethod.stripePaymentMethodNotFound"
-              ),
-            };
-
-            return customResponse.error(response, res);
-          } else if (result === "STRIPE_CUSTOMER_NOT_FOUND") {
-            const response = {
-              status: statusCode.httpNotFound,
-              errNo: errorNumbers.resourceNotFound,
-              errMsg: i18n.__(
-                "stripePaymentMethod.stripeCustomerNotFound"
-              ),
-            };
-
-            return customResponse.error(response, res);
-          } else {
-            const response = {
-              status: statusCode.httpOk,
-              data: result,
-            };
-
-            return customResponse.success(response, res);
-          }
-        })
-        .catch((error) => {
-          const response = {
-            status: error?.status || statusCode.httpInternalServerError,
-            errNo: errorNumbers.genericError,
-            errMsg: error?.message || error,
-          };
-
-          return customResponse.error(response, res);
-        });
-    }
-  }
-
-  /**
-   * Detach a stripe payment method a from customer
-   *
-   * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
-   *
-   * @param {Request} req the http request
-   * @param {Response} res the http response
-   *
-   * @return {Promise<void>} the eventual completion or failure
-   */
-  public async detach(req: Request, res: Response): Promise<void> {
-    const stripePaymentMethodId = req.params.stripePaymentMethodId;
-
-    if (checkObjectId(stripePaymentMethodId)) {
-      stripePaymentMethodService
-        .detach(stripePaymentMethodId)
+    if (checkObjectId(airwallexPaymentIntentId)) {
+      airwallexPaymentIntentService
+        .confirmAirwallexPaymentIntent(
+          airwallexPaymentIntentId,
+          req.body
+          )
         .then((result) => {
           if (result === null || result === undefined) {
             const response = {
               status: statusCode.httpNotFound,
               errNo: errorNumbers.resourceNotFound,
               errMsg: i18n.__(
-                "stripePaymentMethod.stripePaymentMethodNotFound"
+                "stripePaymentIntent.stripePaymentIntentNotFound"
+              ),
+            };
+
+            return customResponse.error(response, res);
+          } else {
+            const response = {
+              status: statusCode.httpOk,
+              data: result,
+            };
+
+            return customResponse.success(response, res);
+          }
+        })
+        .catch((error) => {
+          const response = {
+            status: error?.status || statusCode.httpInternalServerError,
+            errNo: errorNumbers.genericError,
+            errMsg: error?.message || error,
+          };
+
+          return customResponse.error(response, res);
+        });
+    } else {
+        const response = {
+          status: statusCode.httpBadRequest,
+          errNo: errorNumbers.ivalidResource,
+          errMsg: i18n.__(
+            "stripePaymentIntent.invalidStripePaymentIntentId"
+          ),
+        };
+
+        return customResponse.error(response, res);
+    }
+  }
+
+  /**
+   * Capture a airwallex payment intent
+   *
+   * @author Valentin Magde <valentinmagde@gmail.com>
+   * @since 2025-08-28
+   *
+   * @param {Request} req the http request
+   * @param {Response} res the http response
+   *
+   * @return {Promise<void>} the eventual completion or failure
+   */
+  public async captureAirwallexPaymentIntent(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const airwallexPaymentIntentId = req.params.airwallexPaymentIntentId;
+
+    if (checkObjectId(airwallexPaymentIntentId)) {
+      airwallexPaymentIntentService
+        .captureAirwallexPaymentIntent(airwallexPaymentIntentId, req.body)
+        .then((result) => {
+          if (result === null || result === undefined) {
+            const response = {
+              status: statusCode.httpNotFound,
+              errNo: errorNumbers.resourceNotFound,
+              errMsg: i18n.__(
+                "stripePaymentIntent.stripePaymentIntentNotFound"
               ),
             };
 
@@ -347,7 +357,7 @@ class StripePaymentMethodController {
         status: statusCode.httpBadRequest,
         errNo: errorNumbers.ivalidResource,
         errMsg: i18n.__(
-          "stripePaymentMethod.invalidStripePaymentMethodId"
+          "stripePaymentIntent.invalidStripePaymentIntentId"
         ),
       };
 
@@ -356,10 +366,72 @@ class StripePaymentMethodController {
   }
 
   /**
-   * Update a stripe payment method
+   * Cancel a airwallex payment intent
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2025-08-28
+   *
+   * @param {Request} req the http request
+   * @param {Response} res the http response
+   *
+   * @return {Promise<void>} the eventual completion or failure
+   */
+  public async cancelAirwallexPaymentIntent(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const airwallexPaymentIntentId = req.params.airwallexPaymentIntentId;
+
+    if (checkObjectId(airwallexPaymentIntentId)) {
+      airwallexPaymentIntentService
+        .cancelAirwallexPaymentIntent(airwallexPaymentIntentId, req.body)
+        .then((result) => {
+          if (result === null || result === undefined) {
+            const response = {
+              status: statusCode.httpNotFound,
+              errNo: errorNumbers.resourceNotFound,
+              errMsg: i18n.__(
+                "stripePaymentIntent.stripePaymentIntentNotFound"
+              ),
+            };
+
+            return customResponse.error(response, res);
+          } else {
+            const response = {
+              status: statusCode.httpOk,
+              data: result,
+            };
+
+            return customResponse.success(response, res);
+          }
+        })
+        .catch((error) => {
+          const response = {
+            status: error?.status || statusCode.httpInternalServerError,
+            errNo: errorNumbers.genericError,
+            errMsg: error?.message || error,
+          };
+
+          return customResponse.error(response, res);
+        });
+    } else {
+      const response = {
+        status: statusCode.httpBadRequest,
+        errNo: errorNumbers.ivalidResource,
+        errMsg: i18n.__(
+          "stripePaymentIntent.invalidStripePaymentIntentId"
+        ),
+      };
+
+      return customResponse.error(response, res);
+    }
+  }
+
+  /**
+   * Update a airwallex payment intent
+   *
+   * @author Valentin Magde <valentinmagde@gmail.com>
+   * @since 2023-09-03
    *
    * @param {Request} req the http request
    * @param {Response} res the http response
@@ -367,87 +439,54 @@ class StripePaymentMethodController {
    * @return {Promise<void>} the eventual completion or failure
    */
   public async update(req: Request, res: Response): Promise<void> {
-    // const validationRule = {
-    //   type: "required|string",
-    //   "metadata": "required"
-    // };
+    const airwallexPaymentIntentId = req.params.airwallexPaymentIntentId;
 
-    // await validator
-    //   .validator(
-    //     req.body,
-    //     validationRule,
-    //     {},
-    //     (err: Errors, status: boolean) => {
-    //       if (!status) {
-    //         const response = {
-    //           status: statusCode.httpPreconditionFailed,
-    //           errNo: errorNumbers.validator,
-    //           errMsg: err.errors,
-    //         };
+    // check if role id is valid
+    if (checkObjectId(airwallexPaymentIntentId)) {
+      airwallexPaymentIntentService
+        .update(airwallexPaymentIntentId, req.body)
+        .then((result) => {
+          if (result === null || result === undefined) {
+            const response = {
+              status: statusCode.httpNotFound,
+              errNo: errorNumbers.resourceNotFound,
+              errMsg: i18n.__(
+                "stripePaymentIntent.stripePaymentIntentNotFound"
+              ),
+            };
 
-    //         return customResponse.error(response, res);
-    //       }
-    //       else {
-            const stripePaymentMethodId = req.params.stripePaymentMethodId;
+            return customResponse.error(response, res);
+          } else {
+            const response = {
+              status: statusCode.httpOk,
+              data: result,
+            };
 
-            // check if role id is valid
-            if (checkObjectId(stripePaymentMethodId)) {
-              stripePaymentMethodService
-                .update(stripePaymentMethodId, req.body)
-                .then((result) => {
-                  if (result === null || result === undefined) {
-                    const response = {
-                      status: statusCode.httpNotFound,
-                      errNo: errorNumbers.resourceNotFound,
-                      errMsg: i18n.__(
-                        "stripePaymentMethod.stripePaymentMethodNotFound"
-                      ),
-                    };
+            return customResponse.success(response, res);
+          }
+        })
+        .catch((error) => {
+          const response = {
+            status: error?.status || statusCode.httpInternalServerError,
+            errNo: errorNumbers.genericError,
+            errMsg: error?.message || error,
+          };
 
-                    return customResponse.error(response, res);
-                  } else {
-                    const response = {
-                      status: statusCode.httpOk,
-                      data: result,
-                    };
+          return customResponse.error(response, res);
+        });
+    } else {
+      const response = {
+        status: statusCode.httpBadRequest,
+        errNo: errorNumbers.ivalidResource,
+        errMsg: i18n.__(
+          "stripePaymentIntent.invalidStripePaymentIntentId"
+        ),
+      };
 
-                    return customResponse.success(response, res);
-                  }
-                })
-                .catch((error) => {
-                  const response = {
-                    status: error?.status || statusCode.httpInternalServerError,
-                    errNo: errorNumbers.genericError,
-                    errMsg: error?.message || error,
-                  };
-
-                  return customResponse.error(response, res);
-                });
-            } else {
-              const response = {
-                status: statusCode.httpBadRequest,
-                errNo: errorNumbers.ivalidResource,
-                errMsg: i18n.__(
-                  "stripePaymentMethod.invalidStripePaymentMethodId"
-                ),
-              };
-
-              return customResponse.error(response, res);
-            }
-      //     }
-      //   }
-      // )
-      // .catch((error) => {
-      //   const response = {
-      //     status: error?.status || statusCode.httpInternalServerError,
-      //     errNo: errorNumbers.genericError,
-      //     errMsg: error?.message || error,
-      //   };
-
-      //   return customResponse.error(response, res);
-      // });
+      return customResponse.error(response, res);
+    }
   }
 }
 
-const stripePaymentMethodController = new StripePaymentMethodController();
-export default stripePaymentMethodController;
+const airwallexPaymentIntentController = new AirwallexPaymentIntentController();
+export default airwallexPaymentIntentController;

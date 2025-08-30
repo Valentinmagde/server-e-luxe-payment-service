@@ -42,6 +42,10 @@ const local = {
 
   // Swagger documentation
   swaggerBaseUrl: process.env.SWAGGER_BASE_URL || "/v1/payments/docs",
+
+  // Airwallex
+  airwallexClientId: process.env.AIRWALLEX_CLIENT_ID || "YOUR CLIENT ID",
+  airwallexApiKey: process.env.AIRWALLEX_API_KEY || "YOUR API KEY",
 };
 
 export default local;

@@ -1,51 +1,51 @@
 import express, { Router } from "express";
-import routesGrouping from "../../utils/routes-grouping.util";
-import stripePaymentIntentController from "./stripe-payment-intent.controller";
+import routesGrouping from "../../../utils/routes-grouping.util";
+import airwallexPaymentIntentController from "./airwallex-payment-intent.controller";
 
 /**
  * @author Valentin Magde <valentinmagde@gmail.com>
- * @since 2023-09-03
+ * @since 2025-08-29
  *
- * Class StripePaymentIntentRoutes
+ * Class AirwallexPaymentIntentRoutes
  */
-class StripePaymentIntentRoutes {
+class AirwallexPaymentIntentRoutes {
   private router: Router;
 
   /**
    * Create a new Routes instance.
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-03
+   * @since 2025-08-29
    */
   constructor() {
     this.router = express.Router({ mergeParams: true });
   }
 
   /**
-   * Creating all stripe payment intents routes
+   * Creating all airwallex payment intents routes
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-03
+   * @since 2025-08-29
    *
-   * @returns {Router} all stripe payment intents routes
+   * @returns {Router} all airwallex payment intents routes
    */
-  public stripePaymentIntentRoutes(): Router {
+  public airwallexPaymentIntentRoutes(): Router {
     return this.router.use(
       routesGrouping.group((router) => {
         router.use(
-          "/stripePaymentIntents",
+          "/airwallexPaymentIntents",
           routesGrouping.group((router) => {
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentIntents:
+             * /v1/{lang}/airwallexPaymentIntents:
              *   post:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Intent
+             *     - Airwallex Payment Intent
              *     operationId: store
-             *     summary: Create a new stripe payment intent.
-             *     description: Add stripe payment intent into the system.
+             *     summary: Create a new airwallex payment intent.
+             *     description: Add airwallex payment intent into the system.
              *     parameters:
              *      - in: path
              *        name: lang
@@ -191,19 +191,19 @@ class StripePaymentIntentRoutes {
              *              $ref: '#/responses/schemas/500'
              *
              */
-            router.post("/", stripePaymentIntentController.store);
+            router.post("/", airwallexPaymentIntentController.store);
 
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentIntents:
+             * /v1/{lang}/airwallexPaymentIntents:
              *   get:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Intent
-             *     operationId: showAllStripePaymentIntents
-             *     summary: Get all stripe payment intents.
-             *     description: Get all stripe payment intents from the system.
+             *     - Airwallex Payment Intent
+             *     operationId: showAllAirwallexPaymentIntents
+             *     summary: Get all airwallex payment intents.
+             *     description: Get all airwallex payment intents from the system.
              *     parameters:
              *      - in: path
              *        name: lang
@@ -216,7 +216,7 @@ class StripePaymentIntentRoutes {
              *
              *     responses:
              *       200:
-             *         description: The stripe payment intents have been
+             *         description: The airwallex payment intents have been
              *                      successfully recovered.
              *         content:
              *           application/json:
@@ -229,7 +229,7 @@ class StripePaymentIntentRoutes {
              *                  data:
              *                    type: array
              *                    items:
-             *                      $ref: '#/components/schemas/StripePaymentIntent'
+             *                      $ref: '#/components/schemas/AirwallexPaymentIntent'
              *
              *       400:
              *         description: Bad Request.
@@ -261,20 +261,20 @@ class StripePaymentIntentRoutes {
              */
             router.get(
               "/",
-              stripePaymentIntentController.getStripePaymentIntents
+              airwallexPaymentIntentController.getAirwallexPaymentIntents
             );
 
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentIntents/stripeCustomer/{stripeCustomerId}:
+             * /v1/{lang}/airwallexPaymentIntents/airwallexCustomer/{airwallexCustomerId}:
              *   get:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Intent
-             *     operationId: showByStripeCustomer
-             *     summary: Get stripe payment intents by stripe customer ID.
-             *     description: Get stripe payment intents by stripe customer
+             *     - Airwallex Payment Intent
+             *     operationId: showByAirwallexCustomer
+             *     summary: Get airwallex payment intents by airwallex customer ID.
+             *     description: Get airwallex payment intents by airwallex customer
              *                  id from the system.
              *     parameters:
              *      - in: path
@@ -286,7 +286,7 @@ class StripePaymentIntentRoutes {
              *        description: Language for the response. Supported
              *          languages ['en', 'fr']
              *      - in: path
-             *        name: stripeCustomerId
+             *        name: airwallexCustomerId
              *        schema:
              *          type: string
              *        required: true
@@ -294,7 +294,7 @@ class StripePaymentIntentRoutes {
              *
              *     responses:
              *       200:
-             *         description: The stripe payment intents have successfully
+             *         description: The airwallex payment intents have successfully
              *                      retrieve.
              *         content:
              *           application/json:
@@ -305,7 +305,7 @@ class StripePaymentIntentRoutes {
              *                    type: string
              *                    example: Ok
              *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentIntent'
+             *                    $ref: '#/components/schemas/AirwallexPaymentIntent'
              *
              *       '400':
              *         description: Bad Request.
@@ -337,26 +337,26 @@ class StripePaymentIntentRoutes {
              *
              */
             router.get(
-              "/stripeCustomer/:stripeCustomerId",
-              stripePaymentIntentController.getStripePaymentIntentsByCustomer
+              "/airwallexCustomer/:airwallexCustomerId",
+              airwallexPaymentIntentController.getAirwallexPaymentIntentsByCustomer
             );
           })
         );
 
         router.use(
-          "/stripePaymentIntent",
+          "/airwallexPaymentIntent",
           routesGrouping.group((router) => {
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentIntent/{stripePaymentIntentId}:
+             * /v1/{lang}/airwallexPaymentIntent/{airwallexPaymentIntentId}:
              *   get:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Intent
+             *     - Airwallex Payment Intent
              *     operationId: show
-             *     summary: Get a stripe payment intent by ID.
-             *     description: Get a stripe payment intent by id from
+             *     summary: Get a airwallex payment intent by ID.
+             *     description: Get a airwallex payment intent by id from
              *                  the system.
              *     parameters:
              *      - in: path
@@ -368,15 +368,15 @@ class StripePaymentIntentRoutes {
              *        description: Language for the response. Supported
              *          languages ['en', 'fr']
              *      - in: path
-             *        name: stripePaymentIntentId
+             *        name: airwallexPaymentIntentId
              *        schema:
              *          type: string
              *        required: true
-             *        description: String ID of the stripe payment intent to get
+             *        description: String ID of the airwallex payment intent to get
              *
              *     responses:
              *       200:
-             *         description: The stripe payment intent has successfully
+             *         description: The airwallex payment intent has successfully
              *                      retrieve.
              *         content:
              *           application/json:
@@ -387,7 +387,7 @@ class StripePaymentIntentRoutes {
              *                    type: string
              *                    example: Ok
              *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentIntent'
+             *                    $ref: '#/components/schemas/AirwallexPaymentIntent'
              *
              *       '400':
              *         description: Bad Request.
@@ -419,21 +419,21 @@ class StripePaymentIntentRoutes {
              *
              */
             router.get(
-              "/:stripePaymentIntentId",
-              stripePaymentIntentController.getStripePaymentIntentById
+              "/:airwallexPaymentIntentId",
+              airwallexPaymentIntentController.getAirwallexPaymentIntentById
             );
 
             /**
              * @swagger
-             * /v1/{lang}/stripePaymentIntent/{stripePaymentIntentId}/confirm:
+             * /v1/{lang}/airwallexPaymentIntent/{airwallexPaymentIntentId}/confirm:
              *   post:
              *     security:
              *      - bearerAuth: []
              *     tags:
-             *     - Stripe Payment Intent
-             *     operationId: confirmStripePaymentIntent
-             *     summary: Confirm a stripe payment intent.
-             *     description: Confirm a stripe payment intent.
+             *     - Airwallex Payment Intent
+             *     operationId: confirmAirwallexPaymentIntent
+             *     summary: Confirm a airwallex payment intent.
+             *     description: Confirm a airwallex payment intent.
              *     parameters:
              *      - in: path
              *        name: lang
@@ -444,7 +444,7 @@ class StripePaymentIntentRoutes {
              *        description: Language for the response. Supported
              *          languages ['en', 'fr']
              *      - in: path
-             *        name: stripePaymentIntentId
+             *        name: airwallexPaymentIntentId
              *        schema:
              *          type: string
              *        required: true
@@ -485,7 +485,7 @@ class StripePaymentIntentRoutes {
              *
              *     responses:
              *       200:
-             *         description: The stripe payment intent successfully
+             *         description: The airwallex payment intent successfully
              *                      confirm.
              *         content:
              *           application/json:
@@ -496,7 +496,7 @@ class StripePaymentIntentRoutes {
              *                    type: string
              *                    example: Ok
              *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentIntent'
+             *                    $ref: '#/components/schemas/AirwallexPaymentIntent'
              *
              *       '400':
              *         description: Bad Request.
@@ -528,8 +528,108 @@ class StripePaymentIntentRoutes {
              *
              */
             router.post(
-              "/:stripePaymentIntentId/confirm",
-              stripePaymentIntentController.confirmStripePaymentIntent
+              "/:airwallexPaymentIntentId/confirm",
+              airwallexPaymentIntentController.confirmAirwallexPaymentIntent
+            );
+
+            /**
+             * @sagger
+             * /v1/{lang}/airwallexPaymentIntent/{airwallexPaymentIntentId}/capture:
+             *   post:
+             *     security:
+             *      - bearerAuth: []
+             *     tags:
+             *     - Airwallex Payment Intent
+             *     operationId: captureAirwallexPaymentIntent
+             *     summary: Capture a airwallex payment intent.
+             *     description: Capture a airwallex payment intent.
+             *     parameters:
+             *      - in: path
+             *        name: lang
+             *        schema:
+             *          type: string
+             *          example: en
+             *        required: true
+             *        description: Language for the response. Supported
+             *          languages ['en', 'fr']
+             *      - in: path
+             *        name: airwallexPaymentIntentId
+             *        schema:
+             *          type: string
+             *        required: true
+             *        description: String ID of the payment intent to get
+             *
+             *     requestBody:
+             *       required: true
+             *       content:
+             *         application/x-www-form-urlencoded:
+             *           schema:
+             *             type: object
+             *             properties:
+             *               amount_to_capture:
+             *                 type: number
+             *                 description: The amount to capture from the
+             *                      PaymentIntent, which must be less than or
+             *                      equal to the original amount. Any additional
+             *                      amount will be automatically refunded.
+             *
+             *         application/json:
+             *           schema:
+             *             type: object
+             *             properties:
+             *               amount_to_capture:
+             *                 type: number
+             *                 description: The amount to capture from the
+             *                      PaymentIntent, which must be less than or
+             *                      equal to the original amount. Any additional
+             *                      amount will be automatically refunded.
+             *
+             *     responses:
+             *       200:
+             *         description: The airwallex payment intent successfully
+             *                      captured.
+             *         content:
+             *           application/json:
+             *             schema:
+             *                type: object
+             *                properties:
+             *                  status:
+             *                    type: string
+             *                    example: Ok
+             *                  data:
+             *                    $ref: '#/components/schemas/AirwallexPaymentIntent'
+             *
+             *       '400':
+             *         description: Bad Request.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/400'
+             *
+             *       '401':
+             *         description: Unauthorized.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/401'
+             *
+             *       '404':
+             *         description: Not Found.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/404'
+             *
+             *       '500':
+             *         description: Internal Server Error.
+             *         content:
+             *          application/json:
+             *             schema:
+             *              $ref: '#/responses/schemas/500'
+             */
+            router.post(
+              "/:airwallexPaymentIntentId/capture",
+              airwallexPaymentIntentController.captureAirwallexPaymentIntent
             );
 
             /**
@@ -625,8 +725,8 @@ class StripePaymentIntentRoutes {
              *
              */
             router.post(
-              "/:stripePaymentIntentId/cancel",
-              stripePaymentIntentController.cancelStripePaymentIntent
+              "/:airwallexPaymentIntentId/cancel",
+              airwallexPaymentIntentController.cancelAirwallexPaymentIntent
             );
 
             /**
@@ -766,7 +866,7 @@ class StripePaymentIntentRoutes {
              *
              *     responses:
              *       200:
-             *         description: The stripe payment intent has
+             *         description: The airwallex payment intent has
              *                      successfully update.
              *         content:
              *           application/json:
@@ -777,7 +877,7 @@ class StripePaymentIntentRoutes {
              *                    type: string
              *                    example: Ok
              *                  data:
-             *                    $ref: '#/components/schemas/StripePaymentIntent'
+             *                    $ref: '#/components/schemas/AirwallexPaymentIntent'
              *
              *       '400':
              *         description: Bad Request.
@@ -809,8 +909,8 @@ class StripePaymentIntentRoutes {
              *
              */
             router.put(
-              "/:stripePaymentIntentId",
-              stripePaymentIntentController.update
+              "/:airwallexPaymentIntentId",
+              airwallexPaymentIntentController.update
             );
           })
         );
@@ -819,5 +919,5 @@ class StripePaymentIntentRoutes {
   }
 }
 
-const stripePaymentIntentRoutes = new StripePaymentIntentRoutes();
-export default stripePaymentIntentRoutes;
+const airwallexPaymentIntentRoutes = new AirwallexPaymentIntentRoutes();
+export default airwallexPaymentIntentRoutes;

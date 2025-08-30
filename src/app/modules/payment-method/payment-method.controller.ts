@@ -232,7 +232,7 @@ class PaymentMethodController {
    */
   public async store(req: Request, res: Response): Promise<void> {
     const validationRule = {
-      name: "required|string",
+      name: "required",
     };
 
     await validator
