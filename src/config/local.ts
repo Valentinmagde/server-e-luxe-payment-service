@@ -14,7 +14,6 @@ const local = {
     "\n"
   ),
 
-  // API GATEWAY URL
   apiGatewayUrl: process.env.API_GATEWAY_URL || "http://localhost:4000",
   webClientUrl: process.env.WEB_CLIENT_URL || "http://localhost:7001",
   webBackofficeUrl: process.env.WEB_BACKOFFICE_URL || "http://localhost:5001",
