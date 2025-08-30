@@ -17,7 +17,6 @@ const prod = {
   // API GATEWAY URL
   apiGatewayUrl: process.env.API_GATEWAY_URL || "https://api.e-luxe.fr",
   webClientUrl: process.env.WEB_CLIENT_URL || "https://e-luxe.fr",
-  webClientUrl: process.env.WEB_CLIENT_URL || "https://client.e-luxe.fr",
   webBackofficeUrl: process.env.WEB_BACKOFFICE_URL || "https://backoffice.e-luxe.fr",
 
   // Redis db
