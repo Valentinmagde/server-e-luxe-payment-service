@@ -1,0 +1,94 @@
+components:
+  schemas:
+    AirwallexPaymentIntent:
+      type: object
+      properties:
+        _id:
+          type: string
+        id:
+          type: String
+          description: The payment intent's ID.
+        request_id:
+          type: String
+          description: The payment intent's request ID.
+        amount:
+          type: number
+          description: The payment intent's amount.
+        amount_capturable:
+          type: number
+          description: The payment intent's amount capturable.
+        amount_details:
+          type: object
+          description: The payment intent's amount details.
+        amount_received:
+          type: number
+          description: The payment intent's amount received.
+        application:
+          type: string
+          description: The payment intent's application.
+        application_fee_amount:
+          type: string
+          description: The payment intent's application fee amount.
+        canceled_at:
+          type: string
+          description: The payment intent's canceled at.
+        cancellation_reason:
+          type: string
+          description: The payment intent's cancellation reason.
+        capture_method:
+          type: string
+          description: The payment intent's capture method.
+        charges:
+          type: object
+          description: The payment intent's charges.
+        client_secret:
+          type: string
+          description: The payment intent's client secret.
+        confirmation_method:
+          type: string
+          description: The payment intent's confirmation method.
+        created_at:
+          type: string
+          description: The payment intent's created at.
+        currency:
+          type: string
+          description: The payment intent's currency.
+        customer:
+          type: string
+          description: The payment intent's customer.
+        description:
+          type: string
+          description: The payment intent's description.
+        invoice:
+          type: string
+          description: The payment intent's invoice.
+        last_payment_error:
+          type: string
+          description: The payment intent's last payment error.
+        livemode:
+          type: boolean
+          description: The payment intent's livemode.
+        metadata:
+          type: object
+          description: The payment intent's metadata.
+        next_action:
+          type: object
+          description: The payment intent's next action.
+        on_behalf_of:
+          type: string
+          description: The payment intent's on behalf of.
+        payment_method:
+          type: string
+          description: The payment intent's payment method.
+        payment_method_options:
+          type: object
+          description: The payment intent's payment method options.
+        payment_method_types:
+          type: array
+          description: The payment intent's payment method types.
+        receipt_email:
+          type: string
+          description: The payment intent's receipt email.
+        review:
+          type: string
+          description: The payment intent's review.

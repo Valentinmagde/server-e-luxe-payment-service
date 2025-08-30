@@ -1,0 +1,72 @@
+components:
+  schemas:
+    AirwallexPaymentMethod:
+      type: object
+      properties:
+        _id:
+          type: string
+        id:
+          type: string
+        request_id:
+          type: string
+        type:
+          type: string
+        card:
+          type: object
+          properties:
+            expiry_month:
+              type: string
+            expiry_year:
+              type: string
+            name:
+              type: string
+            bin:
+              type: string
+            last4:
+              type: string
+            brand:
+              type: string
+            issuer_country_code:
+              type: string
+            card_type:
+              type: string
+            fingerprint:
+              type: string
+            billing:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                phone_number:
+                  type: string
+                address:
+                  type: object
+                  properties:
+                    country_code:
+                      type: string
+                    state:
+                      type: string
+                    city:
+                      type: string
+                    street:
+                      type: string
+                    postcode:
+                      type: string
+            issuer_name:
+              type: string
+            is_commercial:
+              type: boolean
+            number_type:
+              type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

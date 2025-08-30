@@ -1,34 +1,34 @@
-import StripePaymentMethod from "./stripe-payment-method.model";
+import StripePaymentIntent from "./stripe-payment-intent.model";
+import { stripe } from "../../../../core/stripe";
 import StripeCustomer from "../stripe-customer/stripe-customer.model";
-import { stripe, stripe_pk } from "../../../core/stripe";
 
 /**
  * @author Valentin Magde <valentinmagde@gmail.com>
- * @since 2023-09-02
+ * @since 2023-09-03
  *
- * Class StripePaymentMethodService
+ * Class StripePaymentIntentService
  */
-class StripePaymentMethodService {
+class StripePaymentIntentService {
   /**
-   * Get stripe payment method details
+   * Get stripe payment intent details
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
-   * @param {string} stripePaymentMethodId the stripe payment method id
+   * @param {string} stripePaymentIntentId the stripe payment intent id
    * @return {Promise<unknown>} the eventual completion or failure
    */
-  public getStripePaymentMethodById(
-    stripePaymentMethodId: string
+  public getStripePaymentIntentById(
+    stripePaymentIntentId: string
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const stripeCustomer = await StripePaymentMethod.findById(
-            stripePaymentMethodId
+          const stripePaymentIntent = await StripePaymentIntent.findById(
+            stripePaymentIntentId
           );
 
-          resolve(stripeCustomer);
+          resolve(stripePaymentIntent);
         } catch (error) {
           reject(error);
         }
@@ -37,25 +37,33 @@ class StripePaymentMethodService {
   }
 
   /**
-   * Get stripe payment methods by customer handler
+   * Get stripe payment intents by customer handler
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-08-29
+   * @since 2023-09-03
    *
    * @param {string} stripeCustomerId the stripe customer id
    * @return {Promise<unknown>} the eventual completion or failure
    */
-  public getStripePaymentMethodsByCustomer(
+  public getStripePaymentIntentsByCustomer(
     stripeCustomerId: string
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const stripePaymentMethods = await StripePaymentMethod.find({
-            stripe_customer: stripeCustomerId,
-          });
+          const stripeCustomer = await StripeCustomer.findById(
+            stripeCustomerId
+          );
 
-          resolve(stripePaymentMethods);
+          if(stripeCustomer){
+            const stripePaymentIntents = await StripePaymentIntent.find({
+              customer: stripeCustomer.id,
+            });
+
+            resolve(stripePaymentIntents);
+          }else{
+            resolve(stripeCustomer);
+          }
         } catch (error) {
           reject(error);
         }
@@ -64,20 +72,20 @@ class StripePaymentMethodService {
   }
 
   /**
-   * Get all stripe payment methods
+   * Get all stripe payment intents
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
    * @return {Promise<unknown>} the eventual completion or failure
    */
-  public getStripePaymentMethods(): Promise<unknown> {
+  public getStripePaymentIntents(): Promise<unknown> {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const stripePaymentMethods = await StripePaymentMethod.find();
+          const stripePaymentIntents = await StripePaymentIntent.find();
 
-          resolve(stripePaymentMethods);
+          resolve(stripePaymentIntents);
         } catch (error) {
           reject(error);
         }
@@ -86,26 +94,26 @@ class StripePaymentMethodService {
   }
 
   /**
-   * Create a new stripe payment method
+   * Create a new stripe payment intent
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
-   * @param {any} data the stripe payment method data
+   * @param {any} data the stripe payment intent data
    * @return {Promise<unknown>} the eventual completion or failure
    */
   public async store(data: any): Promise<unknown> {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          await stripe_pk.paymentMethods
+          await stripe.paymentIntents
             .create(data)
             .then(async (res) => {
-              const createdPaymentMethod = new StripePaymentMethod(res);
+              const createdPaymentIntent = new StripePaymentIntent(res);
 
-              await createdPaymentMethod.save();
+              await createdPaymentIntent.save();
 
-              resolve(createdPaymentMethod);
+              resolve(createdPaymentIntent);
             })
             .catch((error) => {
               reject(error);
@@ -118,42 +126,36 @@ class StripePaymentMethodService {
   }
 
   /**
-   * Attach stripe payment method to customer
+   * Confirm stripe payment intent
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
-   * @param {string} stripePaymentMethodId the stripe payment method id
-   * @param {string} stripeCustomerId the stripe customer id
+   * @param {string} stripePaymentIntentId the stripe payment intent id
+   * @param {any} data the stripe payment intent data
    * @return {Promise<unknown>} the eventual completion or failure
    */
-   public attach(
-    stripePaymentMethodId: string,
-    stripeCustomerId: string
+   public confirmStripePaymentIntent(
+    stripePaymentIntentId: string,
+    data: any
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const stripePaymentMethod: any = await StripePaymentMethod.findById(
-            stripePaymentMethodId
+          const stripePaymentIntent: any = await StripePaymentIntent.findById(
+            stripePaymentIntentId
           );
 
-          if (stripePaymentMethod) {
-            const stripeCustomer: any = await StripeCustomer.findById(
-              stripeCustomerId
-            );
-
-            if (stripeCustomer) {
-              await stripe.paymentMethods.attach(
-                stripePaymentMethod.id,
-                {
-                  customer: stripeCustomer.id,
-                }
+          if (stripePaymentIntent) {
+              await stripe.paymentIntents
+              .confirm(
+                stripePaymentIntent.id,
+                data
               )
               .then(res => {
                 (async () => {
-                  await StripePaymentMethod.updateOne(
-                    { _id: stripePaymentMethodId },
+                  await StripePaymentIntent.updateOne(
+                    { _id: stripePaymentIntentId },
                     { $set: res }
                   )
                   .then(() => {
@@ -167,12 +169,8 @@ class StripePaymentMethodService {
               .catch(err => {
                 reject(err)
               });
-            }
-            else{
-              resolve("STRIPE_CUSTOMER_NOT_FOUND");
-            }
           } else {
-            resolve("STRIPE_PAYMENT_METHOD_NOT_FOUND");
+            resolve(stripePaymentIntent);
           }
         } catch (error) {
           reject(error);
@@ -182,32 +180,33 @@ class StripePaymentMethodService {
   }
 
   /**
-   * Detach a payment method a from customer
+   * Cancel a payment intent
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
-   * @param {string} stripePaymentMethodId the stripe payment method id
+   * @param {string} stripePaymentIntentId the stripe payment intent id
    * @return {Promise<unknown>} the eventual completion or failure
    */
-  public detach(
-    stripePaymentMethodId: string
+  public cancelStripePaymentIntent(
+    stripePaymentIntentId: string
   ): Promise<unknown>{
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const stripePaymentMethod: any = await StripePaymentMethod.findById(
-            stripePaymentMethodId
+          const stripePaymentIntent: any = await StripePaymentIntent.findById(
+            stripePaymentIntentId
           );
 
-          if (stripePaymentMethod) {
-            await stripe.paymentMethods.detach(
-              stripePaymentMethod.id
+          if (stripePaymentIntent) {
+            await stripe.paymentIntents
+            .cancel(
+              stripePaymentIntent.id
             )
             .then(res => {
               (async () => {
-                await StripePaymentMethod.updateOne(
-                  { _id: stripePaymentMethodId },
+                await StripePaymentIntent.updateOne(
+                  { _id: stripePaymentIntentId },
                   { $set: res }
                 )
                 .then(() => {
@@ -222,7 +221,7 @@ class StripePaymentMethodService {
               reject(err)
             });
           } else {
-            resolve(stripePaymentMethod);
+            resolve(stripePaymentIntent);
           }
         } catch (error) {
           reject(error);
@@ -232,33 +231,33 @@ class StripePaymentMethodService {
   }
 
   /**
-   * Update a stripe payment method
+   * Update a stripe payment intent
    *
    * @author Valentin Magde <valentinmagde@gmail.com>
-   * @since 2023-09-02
+   * @since 2023-09-03
    *
-   * @param {string} stripePaymentMethodId the stripe payment method id
-   * @param {any} data the stripe payment method data
+   * @param {string} stripePaymentIntentId the stripe payment intent id
+   * @param {any} data the stripe payment intent data
    * @return {Promise<unknown>} the eventual completion or failure
    */
   public async update(
-    stripePaymentMethodId: string,
+    stripePaymentIntentId: string,
     data: any
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const stripePaymentMethod = await StripePaymentMethod.findById(
-            stripePaymentMethodId
+          const stripePaymentIntent = await StripePaymentIntent.findById(
+            stripePaymentIntentId
           );
 
-          if (stripePaymentMethod) {
-            await stripe.paymentMethods
-              .update(stripePaymentMethod.id, data)
+          if (stripePaymentIntent) {
+            await stripe.paymentIntents
+              .update(stripePaymentIntent.id, data)
               .then((res) => {
                 (async () => {
-                  await StripePaymentMethod.updateOne(
-                    { _id: stripePaymentMethodId },
+                  await StripePaymentIntent.updateOne(
+                    { _id: stripePaymentIntentId },
                     { $set: res }
                   )
                   .then(() => {
@@ -273,7 +272,7 @@ class StripePaymentMethodService {
                 reject(err);
               });
           } else {
-            resolve(stripePaymentMethod);
+            resolve(stripePaymentIntent);
           }
         } catch (error) {
           reject(error);
@@ -283,5 +282,5 @@ class StripePaymentMethodService {
   }
 }
 
-const stripePaymentMethodService = new StripePaymentMethodService();
-export default stripePaymentMethodService;
+const stripePaymentIntentService = new StripePaymentIntentService();
+export default stripePaymentIntentService;

@@ -1,7 +1,7 @@
 import { OrdersController } from "@paypal/paypal-server-sdk";
-import { client } from "../../../core/paypal";
+import { client } from "../../../../core/paypal";
 import PaypalOrder from "./paypal-order.model";
-import { parseBody } from "../../utils/helpers.util";
+import { parseBody } from "../../../utils/helpers.util";
 
 const ordersController = new OrdersController(client);
 

@@ -1,0 +1,35 @@
+components:
+  schemas:
+    AirwallexCustomer:
+      type: object
+      properties:
+        _id:
+          type: string
+        id:
+          type: string
+        request_id:
+          type: string
+        status:
+          type: string
+        message:
+          type: string
+        merchant_customer_id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone_number:
+          type: string
+        client_secret:
+          type: string
+        user:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

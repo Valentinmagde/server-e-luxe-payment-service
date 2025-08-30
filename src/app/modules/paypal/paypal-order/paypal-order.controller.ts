@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import customResponse from "../../utils/custom-response.util";
-import statusCode from "../../utils/status-code.util";
-import errorNumbers from "../../utils/error-numbers.util";
+import customResponse from "../../../utils/custom-response.util";
+import statusCode from "../../../utils/status-code.util";
+import errorNumbers from "../../../utils/error-numbers.util";
 import paypalOrderService from "./paypal-order.service";
 
 /**
