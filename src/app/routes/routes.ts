@@ -20,6 +20,10 @@ from "../modules/airwallex/airwallex-payment-intent/airwallex-payment-intent.rou
 import airwallexCustomerRoutes from "../modules/airwallex/airwallex-customer/airwallex-customer.routes";
 import airwallexPaymentMethodRoutes
 from "../modules/airwallex/airwallex-payment-method/airwallex-payment-method.routes";
+import campayPaymentIntentRoutes
+from "../modules/campay/campay-payment-intent/campay-payment-intent.routes";
+import cinetpayPaymentIntentRoutes
+from "../modules/cinetpay/cinetpay-payment-intent/cinetpay-payment-intent.routes";
 
 /**
  * @author Valentin Magde <valentinmagde@gmail.com>
@@ -90,6 +94,16 @@ class Routes {
             // Includes airwallex payment method routes
             router.use(
               airwallexPaymentMethodRoutes.airwallexPaymentMethodRoutes()
+            );
+
+            // Includes campay payment intent routes
+            router.use(
+              campayPaymentIntentRoutes.campayPaymentIntentRoutes()
+            );
+
+            // Includes cinetpay payment intent routes
+            router.use(
+              cinetpayPaymentIntentRoutes.cinetpayPaymentIntentRoutes()
             );
           })
         );
