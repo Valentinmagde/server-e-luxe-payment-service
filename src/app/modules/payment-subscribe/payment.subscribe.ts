@@ -3,8 +3,8 @@ import DBManager from "../../../core/db";
 import rabbitmqManager from "../../../core/rabbitmq";
 import paymentMethodService from "../payment-method/payment-method.service";
 import paypalOrderService from "../paypal/paypal-order/paypal-order.service";
-import stripeCustomerService from "../stripe/stripe-customer/stripe-customer.service";
-import stripePaymentIntentService from "../stripe/stripe-payment-intent/stripe-payment-intent.service";
+import StripePaymentIntent from "../stripe/stripe-payment-intent/stripe-payment-intent.model";
+import { stripe } from "../../../core/stripe";
 import airwallexPaymentIntentService from "../airwallex/airwallex-payment-intent/airwallex-payment-intent.service";
 
 /**
@@ -154,41 +154,33 @@ class PaymentSubscribe {
   }
 
   /**
-   * Processes a payment using Stripe by creating a Stripe customer
-   * and payment intent, and subsequently triggers updates to the order payment status.
+   * Verifies a Stripe payment that was already confirmed client-side via
+   * stripe.confirmPayment(). Retrieves the PaymentIntent from Stripe, checks
+   * that it succeeded, then updates the order status.
    *
    * @param {any} data - The payment data received from RabbitMQ.
-   *
-   * @throws {Error} If any step in the payment process fails (e.g., creating
-   *                 Stripe customer or payment intent).
    * @return {Promise<void>} Resolves when the payment process is completed.
    */
   private async handleStripePayment(data: any): Promise<void> {
-    const createdStripeCustomer: any = await stripeCustomerService.store({
-      name: data.message.name,
-      email: data.message.email,
-      phone: data.message.phone,
-      payment_method: data.message.payment_data.id,
-      user: data.message.user,
-    });
+    const paymentIntentId = data.message.payment_data?.payment_intent_id;
 
-    await stripePaymentIntentService.store({
-      amount:
-        data.message.currency === "USD" || data.message.currency === "EURO"
-          ? Math.round(data.message.amount * 100) // Conversion en centimes pour USD/EURO
-          : ["JPY", "KRW", "VND"].includes(data.message.currency)
-          ? Math.round(data.message.amount) // Pas de conversion pour les devises sans subdivisions
-          : Math.round(data.message.amount * 100), // Par défaut, conversion en centimes
-      currency: data.message.currency,
-      customer: createdStripeCustomer.id,
-      confirm: data.message.confirm,
-      payment_method: data.message.payment_data.id,
-      "automatic_payment_methods[enabled]": data.message.confirm,
-      "automatic_payment_methods[allow_redirects]": data.message.confirm
-        ? "never"
-        : "always",
-      description: data.message.description,
-    });
+    if (!paymentIntentId) {
+      console.error("[Stripe] Missing payment_intent_id in payment_data");
+      return;
+    }
+
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (pi.status !== "succeeded") {
+      console.error(`[Stripe] PaymentIntent ${paymentIntentId} not succeeded (status: ${pi.status})`);
+      return;
+    }
+
+    // Persist the record for audit
+    try {
+      const record = new StripePaymentIntent(pi);
+      await record.save();
+    } catch (_) {}
 
     await rabbitmqManager.publishMessage(
       "eluxe.payment.updateOrderPaymentStatus",
