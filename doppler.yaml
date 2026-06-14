@@ -1,0 +1,3 @@
+setup:
+  project: e-luxe-payment-service
+  config: dev
